@@ -98,7 +98,11 @@ class ShoppingMall {
   //장바구니에 담긴 상품의 총 가격 보기
   void showTotal() {
     if (myCart.isNotEmpty) {
-      print('장바구니에 ${myCart.keys}가 담겨있네요. 총 $total원 입니다!');
+      List<String> myItemTotal = [];
+      for(var entry in myCart.entries){
+        myItemTotal.add('${entry.key} ${entry.value}개');
+      }
+      print('장바구니에 $myItemTotal 담겨있네요. 총 $total원 입니다!');
       return;
     } else {
       print('장바구니에 담긴 상품이 없습니다.');
