@@ -9,10 +9,10 @@ void main() {
     Product('반바지', 38000),
     Product('양말', 5000),
   ];
-
-  ShoppingMall mall = ShoppingMall(products, 0);
   Map<dynamic, int> myCart = {};
-
+  int total = 0;
+  ShoppingMall mall = ShoppingMall(products, myCart, total);
+  
   while (true) {
     print(
       '----------------------------------------------------------------------------------------\n[1] 상품 목록 보기 / [2] 장바구니에 담기 / [3] 장바구니에 담긴 상품의 총 가격 보기 / [4] 프로그램 종료\n----------------------------------------------------------------------------------------',
@@ -24,15 +24,11 @@ void main() {
       mall.showProducts();
     } else if (answer == '2') {
       //장바구니에담기
-      var newItem = mall.addToCart();
-      if (newItem != null) {
-        newItem.forEach((key, value) {
-          myCart.addAll({key: value});
-        });
-      }
+      mall.addToCart();
+      print('2번이 종료되면 $myCart');
     } else if (answer == '3') {
       //장바구니에 담긴 상품의 총 가격 보기
-      mall.showTotal(myCart);
+      mall.showTotal();
     } else if (answer == '4') {
       //프로그램 종료
       print('프로그램을 종료합니다.');
@@ -43,11 +39,20 @@ void main() {
   }
 }
 
+//Product클래스정의
+class Product {
+  String productName;
+  int productPrice;
+  Product(this.productName, this.productPrice);
+}
+
+
 //ShoppingMall클래스정의
 class ShoppingMall {
   List<Product> productList;
+  Map<dynamic, int> myCart;
   int total;
-  ShoppingMall(this.productList, this.total);
+  ShoppingMall(this.productList, this.myCart, this.total);
 
   //상품목록출력
   void showProducts() {
@@ -57,53 +62,44 @@ class ShoppingMall {
   }
 
   //장바구니담기
-  addToCart() {
+  void addToCart() {
     print('상품명을 입력해주세요!');
-    String? itemName = stdin.readLineSync(
-      encoding: Encoding.getByName('utf-8')!,
-    );
-    if ((productList.any((p) => p.productName == itemName)) &&
-        (itemName != '')) {
+    String? itemName = stdin.readLineSync(encoding: Encoding.getByName('utf-8')!);
+    if (itemName != null && itemName != '' && productList.any((p) => p.productName == itemName)) {
       try {
         print('수량을 입력해주세요!');
         var itemNumber = stdin.readLineSync();
         var itemNum = int.parse(itemNumber!);
-
         if (itemNum > 0) {
           print('장바구니에 상품이 담겼어요 !');
-          return {itemName: itemNum};
+          int myTotal = 0;
+          myCart.update(itemName, (value) => value + itemNum, ifAbsent: () => itemNum);
+          myCart.forEach((myCartItem, myCartNum){
+            var found = productList.firstWhere((p) => p.productName == myCartItem);
+            myTotal = found.productPrice * myCartNum;
+          });
+          total += myTotal;
+          return;
         } else {
           print('0개보다 많은 개수의 상품만 담을 수 있어요 !');
         }
       } catch (e) {
-        print('입력값이 올바르지 않아요!');
+        print('입력값이 올바르지 않아요!2');
       }
     } else {
-      print('입력값이 올바르지 않아요!');
+      print('입력값이 올바르지 않아요!1');
     }
   }
 
   //장바구니에담긴상품가격보기
-  void showTotal(myCart) {
+  void showTotal() {
     if (myCart.isNotEmpty) {
-      myCart.forEach((cartItemName, quantity) {
-        for (var p in productList) {
-          if (p.productName == cartItemName) {
-            total += (p.productPrice * quantity).toInt();
-            print('장바구니에 ${total}원 어치를 담으셨네요!');
-            break;
-          }
-        }
-      });
+      print('장바구니에 총 $total이 있네요!');
+      return;
     } else {
       print('장바구니가 비어있어요!');
+      return;
     }
   }
 }
 
-//Product클래스정의
-class Product {
-  String productName;
-  int productPrice;
-  Product(this.productName, this.productPrice);
-}
