@@ -1,2 +1,9 @@
-A sample command-line application with an entrypoint in `bin/`, library code
-in `lib/`, and example unit test in `test/`.
+# Dart 콘솔 쇼핑몰
++ 이 프로젝트는 Dart로 만든 콘솔 쇼핑몰 프로그램입니다.
+
+## 주요 기능
+1. 상품목록 출력
+2. 장바구니
+3. 장바구니 확인
+4. 장바구니 초기화
+5. 프로그램 종료
