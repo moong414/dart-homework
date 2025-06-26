@@ -32,7 +32,7 @@ void main() {
       }
     } else if (answer == '3') {
       //장바구니에 담긴 상품의 총 가격 보기
-      //mall.showTotal(myCart);
+      mall.showTotal(myCart);
     } else if (answer == '4') {
       //프로그램 종료
       print('프로그램을 종료합니다.');
@@ -59,34 +59,46 @@ class ShoppingMall {
   //장바구니담기
   addToCart() {
     print('상품명을 입력해주세요!');
-    String? itemName = stdin.readLineSync(encoding: Encoding.getByName('utf-8')!);
-    if ((productList.any((p) => p.productName == itemName)) && (itemName != '')) {
+    String? itemName = stdin.readLineSync(
+      encoding: Encoding.getByName('utf-8')!,
+    );
+    if ((productList.any((p) => p.productName == itemName)) &&
+        (itemName != '')) {
       try {
         print('수량을 입력해주세요!');
         var itemNumber = stdin.readLineSync();
         var itemNum = int.parse(itemNumber!);
+
         if (itemNum > 0) {
           print('장바구니에 상품이 담겼어요 !');
-          return{itemName: itemNum};
+          return {itemName: itemNum};
         } else {
           print('0개보다 많은 개수의 상품만 담을 수 있어요 !');
         }
       } catch (e) {
-        print('입력값이 올바르지 않아요!2');
+        print('입력값이 올바르지 않아요!');
       }
     } else {
-      print('입력값이 올바르지 않아요!1');
+      print('입력값이 올바르지 않아요!');
     }
   }
 
   //장바구니에담긴상품가격보기
-  // void showTotal(myCart) {
-  //   if(myCart.isEmpty){
-  //     myCart.keys.map((key)=>)
-  //   }else{
-  //     print(myCart);
-  //   }
-  // }
+  void showTotal(myCart) {
+    if (myCart.isNotEmpty) {
+      myCart.forEach((cartItemName, quantity) {
+        for (var p in productList) {
+          if (p.productName == cartItemName) {
+            total += (p.productPrice * quantity).toInt();
+            print('장바구니에 ${total}원 어치를 담으셨네요!');
+            break;
+          }
+        }
+      });
+    } else {
+      print('장바구니가 비어있어요!');
+    }
+  }
 }
 
 //Product클래스정의
